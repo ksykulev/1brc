@@ -3,9 +3,9 @@ require 'ruby-prof'
 result = RubyProf::Profile.profile do
   stations = {}
   file = File.foreach('measurements.txt') do |line|
-    station, temp = line.split(';')
-    
-    stations[station] ||= Ractor.new do |name|
+    station, temperature = line.split(';')
+
+    stations[station] ||= Ractor.new(station) do |name|
 
       #setup local storage for Ractor
       self[:name] = name
@@ -21,9 +21,10 @@ result = RubyProf::Profile.profile do
           
           self[:min] = temp if temp < self[:min]
           self[:max] = temp if temp > self[:max]
-          
+
           self[:sum]   += temp
           self[:count] += 1
+          
         in :get, asker
           asker.send([self[:name], "#{self[:min]}/#{self[:sum] / self[:count]}/#{self[:max]}"])
           break
@@ -33,20 +34,27 @@ result = RubyProf::Profile.profile do
       end
     end
 
-    stations[station].send([:add, temp])
+    stations[station].send([:add, temperature])
   end
 
-  stations.each{|station| station.send([:get, Ractor.current])}
+  stations.each{|name, ractor| ractor.send([:get, Ractor.current()])}
   
-  ractors = stations.values
-  while ractors.length > 0 do
-    
-    ractor, [name, values] = Ractor.select(*ractors)
-    puts "#{name}=#{values}"
-    ractors.delete(ractor)
+  results = {}
+  printed = false
+  stations.length.times do
+    station, values = Ractor.receive()
+    if !printed
+      puts "#{station}=#{values}"
+      printed = true
+    end
   end
 end
 
 File.open "iteration3-profile-stack.html", 'w+' do |file|
   RubyProf::CallStackPrinter.new(result).print(file)
 end
+
+# 100 million rows. :/
+# Executed in  519.38 secs    fish           external
+#    usr time    8.65 mins    0.08 millis    8.65 mins
+#    sys time   18.10 mins    1.31 millis   18.10 mins
