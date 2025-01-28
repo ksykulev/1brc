@@ -1,6 +1,11 @@
 require 'ruby-prof'
+#require 'memory_profiler'
+#require "get_process_mem"
 
-result = RubyProf::Profile.profile do
+#result = RubyProf::Profile.profile do
+#report = MemoryProfiler.report do
+#mb = GetProcessMem.new.mb
+#puts "MEMORY USAGE(MB): #{ mb.round }"
   stations = {}
   file = File.foreach('measurements.txt') do |line|
     station, temp = line.split(';')
@@ -19,12 +24,15 @@ result = RubyProf::Profile.profile do
       printed = true
     end
   end
-end
+#end
+#mb = GetProcessMem.new.mb
+#puts "MEMORY USAGE(MB): #{ mb.round }"
 
-File.open "iteration1-profile-stack.html", 'w+' do |file|
-  RubyProf::CallStackPrinter.new(result).print(file)
-end
+# File.open "iteration1-profile-stack.html", 'w+' do |file|
+#   RubyProf::CallStackPrinter.new(result).print(file)
+# end
 
+#report.pretty_print
 
 # $ time ruby iteration1.rb 
 # Banjul=-23.3/25.995480075670848/82.1
@@ -32,3 +40,9 @@ end
 # real	6m25.861s
 # user	6m14.734s
 # sys	0m9.596s
+
+
+# $ ruby iteration1.rb
+# MEMORY USAGE(MB): 17
+# Banjul=-23.3/25.995480075670848/82.1
+# MEMORY USAGE(MB): 8437
