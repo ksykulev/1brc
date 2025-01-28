@@ -42,7 +42,7 @@ result = RubyProf::Profile.profile do
   while ractors.length > 0 do
     
     ractor, [name, values] = Ractor.select(*ractors)
-    puts "#{station}=#{measurements[:min]}/#{measurements[:mean]}/#{measurements[:max]}"
+    puts "#{name}=#{values}"
     ractors.delete(ractor)
   end
 end
