@@ -2,7 +2,7 @@ require 'ruby-prof'
 #require 'memory_profiler'
 #require "get_process_mem"
 
-result = RubyProf::Profile.profile do
+#result = RubyProf::Profile.profile do
 #report = MemoryProfiler.report do
 #mb = GetProcessMem.new.mb
 #puts "MEMORY USAGE(MB): #{ mb.round }"
@@ -36,9 +36,9 @@ end
 #mb = GetProcessMem.new.mb
 #puts "MEMORY USAGE(MB): #{ mb.round }"
 
-File.open "iteration2-profile-stack.html", 'w+' do |file|
-  RubyProf::CallStackPrinter.new(result).print(file)
-end
+# File.open "iteration2-profile-stack.html", 'w+' do |file|
+#   RubyProf::CallStackPrinter.new(result).print(file)
+# end
 
 #report.pretty_print
 
