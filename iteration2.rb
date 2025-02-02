@@ -27,8 +27,9 @@ require 'ruby-prof'
 
   stations.each do |station, measurements|
     mean = measurements[:sum] / measurements[:count]
+    string = "#{station}=#{measurements[:min]}/#{mean}/#{measurements[:max]}"
     if !printed
-      puts "#{station}=#{measurements[:min]}/#{mean}/#{measurements[:max]}"
+      puts string
       printed = true
     end
   end 

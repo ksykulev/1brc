@@ -17,8 +17,9 @@ require 'ruby-prof'
     min = temps.min
     max = temps.max
     mean = temps.sum / temps.length
+    string = "#{station}=#{min}/#{mean}/#{max}"
     if !printed
-      puts "#{station}=#{min}/#{mean}/#{max}"
+      puts string
       printed = true
     end
   end
