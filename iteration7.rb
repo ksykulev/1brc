@@ -1,6 +1,5 @@
-
 require 'concurrent-ruby'
-require 'ruby-prof'
+#require 'ruby-prof'
 #require "get_process_mem"
 
 #result = RubyProf::Profile.profile do
@@ -14,11 +13,18 @@ parser_executor = Concurrent::ThreadPoolExecutor.new(
 )
 
 stations = {}
-file = File.foreach('measurements.txt') do |line|
-  parser_executor.post(line) do |l|
-    station, temp = l.split(';')
-    stations[station] ||= []
-    stations[station] << temp.to_f
+lines = []
+file = File.foreach('measurements.txt').with_index do |line, line_number|
+  lines << line
+  if line_number % 1000 == 0
+    parser_executor.post(lines) do |lines|
+      lines.each do |l|
+        station, temp = l.split(';')
+        stations[station] ||= []
+        stations[station] << temp.to_f
+      end
+    end
+    lines = []
   end
 end
 
@@ -38,15 +44,21 @@ stations.each do |station, temps|
 end
 #end
 
-# File.open "iteration6-profile-stack.html", 'w+' do |file|
+# File.open "iteration7-profile-stack.html", 'w+' do |file|
 #  RubyProf::CallStackPrinter.new(result).print(file)
 # end
 #mb = GetProcessMem.new.mb
 #puts "MEMORY USAGE(MB): #{ mb.round }"
 
-# $ time ruby iteration6.rb 
-# Banjul=-23.3/25.995480075670848/82.1
 
-# real	30m44.149s
-# user	29m38.507s
-# sys	1m2.744s
+# $ time ruby iteration7.rb 
+# Banjul=-23.3/25.995475114243824/82.1
+
+# real	7m14.603s
+# user	6m59.213s
+# sys	0m14.024s
+
+# $ ruby iteration7.rb 
+# MEMORY USAGE(MB): 18
+# Banjul=-23.3/25.995475114243824/82.1
+# MEMORY USAGE(MB): 8337
