@@ -33,7 +33,7 @@ require 'ruby-prof'
       printed = true
     end
   end 
-end
+#end
 #mb = GetProcessMem.new.mb
 #puts "MEMORY USAGE(MB): #{ mb.round }"
 
