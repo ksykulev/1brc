@@ -16,7 +16,7 @@ stations = {}
 lines = []
 file = File.foreach('measurements.txt').with_index do |line, line_number|
   lines << line
-  if line_number % 1000 == 0
+  if line_number != 0 && line_number % 1000 == 0
     parser_executor.post(lines) do |lines|
       lines.each do |l|
         station, temp = l.split(';')
